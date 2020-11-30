@@ -1,0 +1,2 @@
+# YourWeather-android
+YourWeather = KimiNoTenki
