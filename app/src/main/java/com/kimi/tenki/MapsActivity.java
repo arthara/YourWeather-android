@@ -83,16 +83,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //I have permission
                 //Grab current position
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                LatLng latLng = new LatLng(location.getLatitude(), location.getAltitude());
-                mMap.addMarker(
-                        new MarkerOptions().position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                                .title("Hello")
-                );
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8));
             }
         }
+
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getAltitude());
+        mMap.addMarker(
+                new MarkerOptions().position(latLng)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        .title("Hello")
+        );
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8));
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
