@@ -8,7 +8,11 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
+/.idea
 /build
 /captures
 .externalNativeBuild
 .cxx
+/app/src/androidTest/java/com/kimi/tenki/
+/app/src/test/java/com/kimi/tenki/
+.gitignore
