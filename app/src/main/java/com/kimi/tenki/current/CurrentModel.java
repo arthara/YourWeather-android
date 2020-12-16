@@ -2,14 +2,14 @@ package com.kimi.tenki.current;
 
 import com.google.gson.annotations.SerializedName;
 import com.kimi.tenki.shared.model.APIResponse;
-import com.kimi.tenki.shared.model.Clouds;
-import com.kimi.tenki.shared.model.Coordinate;
-import com.kimi.tenki.shared.model.Main;
+import com.kimi.tenki.current.submodel.Clouds;
+import com.kimi.tenki.current.submodel.Coordinate;
+import com.kimi.tenki.current.submodel.Main;
 import com.kimi.tenki.shared.model.Rain;
 import com.kimi.tenki.shared.model.Snow;
-import com.kimi.tenki.shared.model.Sys;
+import com.kimi.tenki.current.submodel.Sys;
 import com.kimi.tenki.shared.model.Weather;
-import com.kimi.tenki.shared.model.Wind;
+import com.kimi.tenki.current.submodel.Wind;
 
 public class CurrentModel extends APIResponse {
     private Coordinate coord;
@@ -25,8 +25,8 @@ public class CurrentModel extends APIResponse {
     protected Rain rain;
     protected Snow snow;
     @SerializedName("dt")
-    protected int dataTime;
-    protected Weather weather;
+    protected long dataTime;
+    protected Weather weather[];
 
     public Coordinate getCoord() {
         return coord;
@@ -36,11 +36,11 @@ public class CurrentModel extends APIResponse {
         this.coord = coord;
     }
 
-    public Weather getWeather() {
+    public Weather[] getWeather() {
         return weather;
     }
 
-    public void setWeather(Weather weather) {
+    public void setWeather(Weather weather[]) {
         this.weather = weather;
     }
 
@@ -92,7 +92,7 @@ public class CurrentModel extends APIResponse {
         this.snow = snow;
     }
 
-    public int getDataTime() {
+    public long getDataTime() {
         return dataTime;
     }
 

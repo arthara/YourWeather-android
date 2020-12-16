@@ -1,18 +1,18 @@
-package com.kimi.tenki.shared.model;
+package com.kimi.tenki.forecast.submodel;
 
 import com.google.gson.annotations.SerializedName;
+import com.kimi.tenki.shared.model.Rain;
+import com.kimi.tenki.shared.model.Snow;
+import com.kimi.tenki.shared.model.Weather;
 
 public class BaseWeatherData {
     @SerializedName("dt")
-    protected int dataTime;
-    protected int sunrise;
-    protected int sunset;
+    protected long dataTime;
     protected int pressure;
     protected int humidity;
     @SerializedName("dew_point")
     protected float dewPoint;
     protected int clouds;
-    protected float uvi;
     protected int visibility;
     @SerializedName("wind_gust")
     protected int windGust;
@@ -22,30 +22,14 @@ public class BaseWeatherData {
     protected int windDegrees;
     protected Rain rain;
     protected Snow snow;
-    protected Weather weather;
+    protected Weather weather[];
 
-    public int getDataTime() {
+    public long getDataTime() {
         return dataTime;
     }
 
-    public void setDataTime(int dataTime) {
+    public void setDataTime(long dataTime) {
         this.dataTime = dataTime;
-    }
-
-    public int getSunrise() {
-        return sunrise;
-    }
-
-    public void setSunrise(int sunrise) {
-        this.sunrise = sunrise;
-    }
-
-    public int getSunset() {
-        return sunset;
-    }
-
-    public void setSunset(int sunset) {
-        this.sunset = sunset;
     }
 
     public int getPressure() {
@@ -78,14 +62,6 @@ public class BaseWeatherData {
 
     public void setClouds(int clouds) {
         this.clouds = clouds;
-    }
-
-    public float getUvi() {
-        return uvi;
-    }
-
-    public void setUvi(float uvi) {
-        this.uvi = uvi;
     }
 
     public int getVisibility() {
@@ -136,11 +112,11 @@ public class BaseWeatherData {
         this.snow = snow;
     }
 
-    public Weather getWeather() {
+    public Weather[] getWeather() {
         return weather;
     }
 
-    public void setWeather(Weather weather) {
+    public void setWeather(Weather[] weather) {
         this.weather = weather;
     }
 }

@@ -1,4 +1,4 @@
-package com.kimi.tenki.forecast;
+package com.kimi.tenki.forecast.submodel;
 
 import com.google.gson.annotations.SerializedName;
 import com.kimi.tenki.shared.model.DailyFeels;

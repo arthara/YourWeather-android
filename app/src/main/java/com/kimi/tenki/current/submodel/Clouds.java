@@ -1,4 +1,4 @@
-package com.kimi.tenki.shared.model;
+package com.kimi.tenki.current.submodel;
 
 public class Clouds {
     private int all;

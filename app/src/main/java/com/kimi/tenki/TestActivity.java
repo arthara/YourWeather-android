@@ -1,6 +1,5 @@
 package com.kimi.tenki;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -9,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.kimi.tenki.current.CurrentModel;
 import com.kimi.tenki.current.CurrentService;
+import com.kimi.tenki.forecast.ForecastModel;
 import com.kimi.tenki.forecast.ForecastService;
 import com.kimi.tenki.shared.retrofit.ServiceGenerator;
 
@@ -21,6 +21,7 @@ public class TestActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //test api
+        testCurrentAPI();
         testForecastAPI();
         //test api
         //Intent intent = new Intent(this, MapsActivity.class);
@@ -50,9 +51,9 @@ public class TestActivity extends FragmentActivity {
     private void testForecastAPI(){
         ForecastService service = ServiceGenerator.createService(ForecastService.class);
         Call call = service.getByLocation(80.02f, -7.82f);
-        call.enqueue(new Callback<CurrentModel>() {
+        call.enqueue(new Callback<ForecastModel>() {
             @Override
-            public void onResponse(Call<CurrentModel> call, Response<CurrentModel> response) {
+            public void onResponse(Call<ForecastModel> call, Response<ForecastModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("Berhasil", response.body().toString());
                 } else {
@@ -61,7 +62,7 @@ public class TestActivity extends FragmentActivity {
             }
 
             @Override
-            public void onFailure(Call<CurrentModel> call, Throwable t) {
+            public void onFailure(Call<ForecastModel> call, Throwable t) {
                 Log.d("Request Failure", t.getMessage());
             }
         });

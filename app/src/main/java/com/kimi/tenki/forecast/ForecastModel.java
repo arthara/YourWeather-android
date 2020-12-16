@@ -1,32 +1,16 @@
 package com.kimi.tenki.forecast;
 
-import com.google.gson.annotations.SerializedName;
-import com.kimi.tenki.shared.model.APIResponse;
+import com.kimi.tenki.forecast.submodel.Daily;
+import com.kimi.tenki.forecast.submodel.OneCallModel;
 
-public class ForecastModel extends APIResponse {
-    @SerializedName("lon")
-    private float longitude;
-    @SerializedName("lat")
-    private float latitude;
-    private String timezone;
-    @SerializedName("timezone_offset")
-    private int timezoneOffset;
+public class ForecastModel extends OneCallModel {
     private Daily daily[];
 
-
-    public float getLongitude() {
-        return longitude;
+    public Daily[] getDaily() {
+        return daily;
     }
 
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
-    }
-
-    public float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
+    public void setDaily(Daily[] daily) {
+        this.daily = daily;
     }
 }
