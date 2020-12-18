@@ -20,8 +20,8 @@ public class BaseWeatherData {
     protected float windSpeed;
     @SerializedName("wind_degree")
     protected int windDegrees;
-    protected Rain rain;
-    protected Snow snow;
+    protected float rain;
+    protected float snow;
     protected Weather weather[];
 
     public long getDataTime() {
@@ -96,27 +96,27 @@ public class BaseWeatherData {
         this.windDegrees = windDegrees;
     }
 
-    public Rain getRain() {
-        return rain;
-    }
-
-    public void setRain(Rain rain) {
-        this.rain = rain;
-    }
-
-    public Snow getSnow() {
-        return snow;
-    }
-
-    public void setSnow(Snow snow) {
-        this.snow = snow;
-    }
-
     public Weather[] getWeather() {
         return weather;
     }
 
     public void setWeather(Weather[] weather) {
         this.weather = weather;
+    }
+
+    public float getRain() {
+        return rain;
+    }
+
+    public void setRain(float rain) {
+        this.rain = rain;
+    }
+
+    public float getSnow() {
+        return snow;
+    }
+
+    public void setSnow(float snow) {
+        this.snow = snow;
     }
 }
