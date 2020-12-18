@@ -11,6 +11,7 @@ import com.kimi.tenki.current.CurrentService;
 import com.kimi.tenki.forecast.ForecastModel;
 import com.kimi.tenki.forecast.ForecastService;
 import com.kimi.tenki.shared.retrofit.ServiceGenerator;
+import com.kimi.tenki.shared.session.CurrentRepository;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +22,7 @@ public class TestActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //test api
-        testCurrentAPI();
+//        testCurrentAPI();
         testForecastAPI();
         //test api
         //Intent intent = new Intent(this, MapsActivity.class);
@@ -36,6 +37,8 @@ public class TestActivity extends FragmentActivity {
             public void onResponse(Call<CurrentModel> call, Response<CurrentModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("Berhasil", response.body().toString());
+                    cacheCurrent(response.body());
+                    logCache();
                 } else {
                     Log.d("Gagal", response.toString());
                 }
@@ -66,5 +69,15 @@ public class TestActivity extends FragmentActivity {
                 Log.d("Request Failure", t.getMessage());
             }
         });
+    }
+
+    private void cacheCurrent(CurrentModel currentData){
+        CurrentRepository current = new CurrentRepository(this);
+        current.addCurrentData(currentData);
+    }
+
+    private void logCache(){
+        CurrentRepository current = new CurrentRepository(this);
+        Log.d("Current Data", "" + current.getSessionData().size());
     }
 }

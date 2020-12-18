@@ -18,7 +18,7 @@ public class CurrentModel extends APIResponse {
     private int timezone;
     private int id;
     @SerializedName("name")
-    private int cityName;
+    private String cityName;
     protected Main main;
     protected Wind wind;
     protected Clouds clouds;
@@ -26,6 +26,7 @@ public class CurrentModel extends APIResponse {
     protected Snow snow;
     @SerializedName("dt")
     protected long dataTime;
+    protected int visibility;
     protected Weather weather[];
 
     public Coordinate getCoord() {
@@ -124,11 +125,23 @@ public class CurrentModel extends APIResponse {
         this.id = id;
     }
 
-    public int getCityName() {
+    public void setDataTime(long dataTime) {
+        this.dataTime = dataTime;
+    }
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
+
+    public String getCityName() {
         return cityName;
     }
 
-    public void setCityName(int cityName) {
+    public void setCityName(String cityName) {
         this.cityName = cityName;
     }
 }
