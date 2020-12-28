@@ -7,7 +7,7 @@
     android:paddingTop="0dp"
     android:paddingRight="0dp"
     android:paddingBottom="0dp"
-    tools:context=".MapsActivity">
+    >
     <!--<?xml version="1.0" encoding="utf-8"?>-->
 
     <fragment
