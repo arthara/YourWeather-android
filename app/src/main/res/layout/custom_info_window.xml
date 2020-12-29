@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -12,7 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:background="@drawable/item_background">
+            android:background="@drawable/item_background"
+            >
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,7 +39,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginBottom="35dp"
                     android:background="@drawable/ic_close"
-                    android:text="@string/dismiss" />
+                    />
 
                 <TextView
                     android:id="@+id/moreCityInfo"
@@ -76,8 +78,10 @@
                     android:layout_height="30dp"
                     android:layout_below="@+id/popListTitle"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginTop="53dp"
-                    android:layout_marginEnd="42dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="49dp"
                     android:background="@drawable/blue_button"
                     android:text="Discover"
                     android:textColor="@color/white" />
