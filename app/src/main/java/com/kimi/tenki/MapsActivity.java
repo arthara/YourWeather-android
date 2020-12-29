@@ -59,14 +59,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getPermissionCustom();
-            }
-        });
-
         mMap = googleMap;
         mMap.setInfoWindowAdapter(new CustomInfoWindowActivity(getApplicationContext()));
         mMap.setOnInfoWindowClickListener(this);
@@ -106,6 +98,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPermissionCustom();
+            }
+        });
 
         //getPermissionCustom();
     }
