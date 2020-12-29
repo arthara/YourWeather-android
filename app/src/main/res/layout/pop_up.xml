@@ -56,7 +56,7 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/moreInfo"
+                    android:id="@+id/more"
                     android:layout_width="106dp"
                     android:layout_height="26dp"
                     android:layout_below="@+id/popList"

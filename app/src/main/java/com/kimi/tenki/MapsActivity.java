@@ -1,6 +1,7 @@
 package com.kimi.tenki;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -8,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,7 +33,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
-
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng userLocation = new LatLng(location.getLatitude(), location.getAltitude());
 
         mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 8));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
         mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
     }
 
@@ -177,7 +178,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showActivity(String url) {
-
+        dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
     }
 
     @Override
