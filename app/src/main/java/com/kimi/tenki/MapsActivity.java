@@ -3,11 +3,14 @@ package com.kimi.tenki;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,9 +29,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -94,7 +100,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 updateMap(lastKnownLocation);
-
             }
         }
 
@@ -105,7 +110,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 getPermissionCustom();
             }
         });
+        mMap.setOnMarkerClickListener(this);
+    }
 
+    public String getAddresswithLatLng(LatLng latLng){
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        String address = "";
+        try {
+            address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            .get(0).getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return address;
     }
 
     public void updateMap(Location location) {
@@ -125,7 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
@@ -144,6 +161,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 
+    private void listAddress(Location location, LatLng latLng){
+       Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+       String fullAddress = "";
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getAltitude(),location.getLongitude(), 1);
+            if (addressList .get(0).getAddressLine(0) != null || addressList.size() > 0){
+                fullAddress += addressList.get(0).getAddressLine(0) + " ";
+                Log.d("Address List", addressList.get(0).toString());
+            }
+            if (addressList.get(0).getSubAdminArea() != null){
+                fullAddress += addressList.get(0).getSubAdminArea() + "\n";
+            }
+            Toast.makeText(MapsActivity.this, "Address " + fullAddress, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -163,7 +197,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onInfoWindowClick(Marker marker) {
         showActivity(marker.getTag().toString());
-        //Toast.makeText(getApplicationContext(), marker.getTag().toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), marker.getTag().toString(), Toast.LENGTH_LONG).show();
+    }
+
+    public void getWeathers(){
+
     }
 
     private void showActivity(String url) {
@@ -176,6 +214,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+/*        Integer clickCount = (Integer) marker.getTag();
+        if (clickCount != null)
+            clickCount++;
+        marker.setTag(clickCount);*/
         return false;
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        options.title(getAddresswithLatLng(latLng));
+
+        mMap.addMarker(options);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }

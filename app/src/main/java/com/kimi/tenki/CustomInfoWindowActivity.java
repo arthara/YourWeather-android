@@ -27,7 +27,7 @@ public class CustomInfoWindowActivity implements GoogleMap.InfoWindowAdapter{
     @Override
     public View getInfoContents(Marker marker) {
         TextView title = view.findViewById(R.id.cityTitle);
-        //title.setText(marker.getTitle());
+        title.setText(marker.getTitle());
 
         TextView morecityinfo = (TextView) view.findViewById(R.id.moreCityInfo);
         //morecityinfo.setText(marker.getSnippet());
