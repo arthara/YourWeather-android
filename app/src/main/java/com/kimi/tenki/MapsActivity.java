@@ -30,11 +30,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener{
 
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -68,6 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setInfoWindowAdapter(new CustomInfoWindowActivity(getApplicationContext()));
         mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMarkerClickListener(this);
+        //mMap.setOnMapLongClickListener(this);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -110,31 +112,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 getPermissionCustom();
             }
         });
-        mMap.setOnMarkerClickListener(this);
+
     }
 
-    public String getAddresswithLatLng(LatLng latLng){
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-        String address = "";
+    public void getAddresswithLatLng(LatLng latLng){
+        if (mMap != null){
+            mMap.clear();
+        }
+
+        List<Address> addresses = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        //Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         try {
-            address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            .get(0).getAddressLine(0);
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return address;
+
+        //String cityName = addresses.get(0).getAddressLine(0);
+        //String stateName = addresses.get(0).getAddressLine(1);
+        //String countryName = addresses.get(0).getAddressLine(2);
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        options.title("Title");
+        options.snippet(latLng.latitude + ", " + latLng.longitude);
+
+        mMap.addMarker(options);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
     }
 
     public void updateMap(Location location) {
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-        mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-        mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
+        getAddresswithLatLng(userLocation);
     }
 
     private void getPermissionCustom() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+/*        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -153,31 +169,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         .title("Hello")
         );
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8));
-
-/*        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
-    }
-
-    private void listAddress(Location location, LatLng latLng){
-       Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-       String fullAddress = "";
-        try {
-            List<Address> addressList = geocoder.getFromLocation(location.getAltitude(),location.getLongitude(), 1);
-            if (addressList .get(0).getAddressLine(0) != null || addressList.size() > 0){
-                fullAddress += addressList.get(0).getAddressLine(0) + " ";
-                Log.d("Address List", addressList.get(0).toString());
-            }
-            if (addressList.get(0).getSubAdminArea() != null){
-                fullAddress += addressList.get(0).getSubAdminArea() + "\n";
-            }
-            Toast.makeText(MapsActivity.this, "Address " + fullAddress, Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8));*/
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            updateMap(lastKnownLocation);
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -196,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        showActivity(marker.getTag().toString());
+        showActivity(marker.getTitle().toString());
         Toast.makeText(getApplicationContext(), marker.getTag().toString(), Toast.LENGTH_LONG).show();
     }
 
@@ -206,35 +209,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showActivity(String url) {
         dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
-        View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+        View view = getLayoutInflater().inflate(R.layout.popup, null);
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
         dialog.show();
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-/*        Integer clickCount = (Integer) marker.getTag();
-        if (clickCount != null)
-            clickCount++;
-        marker.setTag(clickCount);*/
-        return false;
-    }
-
+/*
     @Override
     public void onMapLongClick(LatLng latLng) {
-        MarkerOptions options = new MarkerOptions();
-        options.position(latLng);
-        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        options.title(getAddresswithLatLng(latLng));
-
-        mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
+        getAddresswithLatLng(latLng);
     }
+*/
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 }

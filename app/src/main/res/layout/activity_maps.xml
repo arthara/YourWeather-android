@@ -22,12 +22,14 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="23dp"
-        app:backgroundTint="@color/primaryTextColor"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="325dp"
+        android:layout_marginBottom="19dp"
         android:clickable="true"
-        android:src="@drawable/target_3" />
+        android:src="@drawable/target_3"
+        app:backgroundTint="@color/primaryTextColor" />
 
 </RelativeLayout>
