@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,6 +49,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static java.security.AccessController.getContext;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener{
 
@@ -196,6 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
                     .get(0).getAddressLine(0);
+            Log.d("Youraddress", address);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -223,8 +229,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(getApplicationContext(), marker.getTitle(), Toast.LENGTH_LONG).show();
     }
 
-    public void getWeathers(){
+    private void setWeatherIcon(String icon){
+        ImageView weatherimg = (ImageView) findViewById(R.id.imageView3);
+        float circleRadius = weatherimg.getWidth()/ 2;
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+        circularProgressDrawable.setStrokeWidth(circleRadius/ 5);
+        circularProgressDrawable.setCenterRadius(circleRadius * 4 / 5);
+        circularProgressDrawable.start();
 
+        Glide.with(getApplicationContext())
+                .load(IconRetrieverUtil.getIconUrl(icon))
+                .override(weatherimg.getWidth(), weatherimg.getWidth())
+                .placeholder(circularProgressDrawable)
+                .into(weatherimg);
     }
 
     private void showActivity(String cityName, String citySnippet) {
@@ -234,8 +251,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView cityDescription = view.findViewById(R.id.popListTitle);
         Button dismissButtonTop = view.findViewById(R.id.dismissPopTop);
 
-        Button celcius = view.findViewById(R.id.textCelcius);
+        TextView celcius = view.findViewById(R.id.textCelcius);
         Button goToWeatherActivity = (Button) view.findViewById(R.id.goToWeatherActivity);
+        TextView cityWeather = view.findViewById(R.id.weatherImage);
+
 
         cityDescription.setText(citySnippet);
 
@@ -250,7 +269,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         CurrentModel currentModel = response.body();
                         cityTitle.setText(currentModel.getCityName());
-
+                        Log.d("Suhue:", String.valueOf(currentModel.getMain().getTemperature()));
+                        String s = (currentModel.getMain().getTemperature()) + " C";
+                        celcius.setText(s);
+                        //cityWeather.setText(IconRetrieverUtil.getIconUrl(""));
                     } else {
                         //options.title("Not a country");
                         Log.d("Gagal", response.toString());
@@ -293,6 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getAddresswithLatLng(latLng);
     }
 */
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
