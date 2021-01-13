@@ -154,36 +154,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         options.snippet("Lat : " + latLng.latitude + ", Longitude:" + latLng.longitude);
 
         weatherLatLng = latLng;
-/*
-        CurrentService service = ServiceGenerator.createService(CurrentService.class);
-        Call call = service.getByLocation((float) latLng.latitude, (float) latLng.longitude);
-        call.enqueue(new Callback<CurrentModel>() {
-            @Override
-            public void onResponse(Call<CurrentModel> call, Response<CurrentModel> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d("Berhasil", response.body().toString());
-
-                    CurrentModel currentModel = response.body();
-                    address[0] = currentModel.getCityName();
-
-                } else {
-                    //options.title("Not a country");
-                    Log.d("Gagal", response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CurrentModel> call, Throwable t) {
-                Log.d("Request Failure", t.getMessage());
-            }
-        });
-*/
-
-
-
-        //String cityName = addresses.get(0).getAddressLine(0);
-        //String stateName = addresses.get(0).getAddressLine(1);
-        //String countryName = addresses.get(0).getAddressLine(2);
 
 
 
@@ -263,6 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView cityTitle = view.findViewById(R.id.popTitle);
         TextView cityDescription = view.findViewById(R.id.popListTitle);
         Button dismissButtonTop = view.findViewById(R.id.dismissPopTop);
+
+        Button celcius = view.findViewById(R.id.textCelcius);
         Button goToWeatherActivity = (Button) view.findViewById(R.id.goToWeatherActivity);
 
         cityDescription.setText(citySnippet);
