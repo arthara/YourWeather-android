@@ -17,6 +17,7 @@ public class CustomInfoWindowActivity implements GoogleMap.InfoWindowAdapter{
         this.context = context;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.custom_info_window, null);
+
     }
 
     @Override
@@ -31,6 +32,7 @@ public class CustomInfoWindowActivity implements GoogleMap.InfoWindowAdapter{
 
         TextView latLang = (TextView) view.findViewById(R.id.moreCityInfo);
         latLang.setText(marker.getSnippet());
+
         //morecityinfo.setText(marker.getSnippet());
         return view;
     }

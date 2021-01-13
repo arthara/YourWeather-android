@@ -50,13 +50,13 @@
 
                 <TextView
                     android:id="@+id/todayinfo"
-                    android:layout_width="106dp"
-                    android:layout_height="26dp"
+                    android:layout_width="148dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/cardWeatherPop"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="37dp"
+                    android:layout_marginStart="7dp"
                     android:layout_marginTop="0dp"
-                    android:layout_marginEnd="89dp"
+                    android:layout_marginEnd="56dp"
                     android:layout_toStartOf="@+id/dismissPop"
                     android:text="Today"
                     android:textAllCaps="true"
@@ -96,7 +96,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
-                            android:id="@+id/imageView2"
+                            android:id="@+id/weatherImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -109,7 +109,7 @@
                             tools:srcCompat="@tools:sample/avatars" />
 
                         <TextView
-                            android:id="@+id/textView"
+                            android:id="@+id/textCelcius"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
@@ -117,7 +117,7 @@
                             android:textColor="@color/primaryBlack"
                             android:textSize="30sp"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+                            app:layout_constraintBottom_toTopOf="@+id/weatherImage"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.76"
                             app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +125,7 @@
                             app:layout_constraintVertical_bias="1.0" />
 
                         <TextView
-                            android:id="@+id/textView2"
+                            android:id="@+id/textSeasonStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Rainy Season"
@@ -136,7 +136,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.419"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                            app:layout_constraintTop_toBottomOf="@+id/weatherImage"
                             app:layout_constraintVertical_bias="0.377" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

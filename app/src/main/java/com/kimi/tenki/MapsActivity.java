@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,11 +30,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kimi.tenki.current.CurrentModel;
+import com.kimi.tenki.current.CurrentService;
+import com.kimi.tenki.forecast.ForecastModel;
+import com.kimi.tenki.shared.retrofit.ServiceGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener{
 
@@ -42,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private FloatingActionButton fab;
+    private LatLng weatherLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +88,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                updateMap(location);
+                //updateMap(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+
             }
         };
 
 
         if (Build.VERSION.SDK_INT < 23) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 return;
             }
@@ -120,67 +136,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.clear();
         }
 
-        List<Address> addresses = new ArrayList<>();
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        //Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         //Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        try {
+  /*      try {
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        String[] address = {""};
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        options.title(getStringAddresswithLatLng(latLng));
+        options.snippet("Lat : " + latLng.latitude + ", Longitude:" + latLng.longitude);
+
+        weatherLatLng = latLng;
+/*
+        CurrentService service = ServiceGenerator.createService(CurrentService.class);
+        Call call = service.getByLocation((float) latLng.latitude, (float) latLng.longitude);
+        call.enqueue(new Callback<CurrentModel>() {
+            @Override
+            public void onResponse(Call<CurrentModel> call, Response<CurrentModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("Berhasil", response.body().toString());
+
+                    CurrentModel currentModel = response.body();
+                    address[0] = currentModel.getCityName();
+
+                } else {
+                    //options.title("Not a country");
+                    Log.d("Gagal", response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CurrentModel> call, Throwable t) {
+                Log.d("Request Failure", t.getMessage());
+            }
+        });
+*/
+
+
 
         //String cityName = addresses.get(0).getAddressLine(0);
         //String stateName = addresses.get(0).getAddressLine(1);
         //String countryName = addresses.get(0).getAddressLine(2);
 
-        MarkerOptions options = new MarkerOptions();
-        options.position(latLng);
-        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        options.title("Title");
-        options.snippet(latLng.latitude + ", " + latLng.longitude);
+
 
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
     }
+
 
     public void updateMap(Location location) {
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
         getAddresswithLatLng(userLocation);
     }
 
     private void getPermissionCustom() {
-/*        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(
-                new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .title("Hello")
-        );
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8));*/
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
+        if (Build.VERSION.SDK_INT < 23) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                return;
+            }
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            updateMap(lastKnownLocation);
+        }else{
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                updateMap(lastKnownLocation);
+            }
         }
     }
 
+    public String getStringAddresswithLatLng(LatLng latLng){
+        Geocoder.isPresent();
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        String address = "";
+        try {
+            address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                    .get(0).getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return address;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -199,17 +248,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        showActivity(marker.getTitle().toString());
-        Toast.makeText(getApplicationContext(), marker.getTag().toString(), Toast.LENGTH_LONG).show();
+        showActivity(Objects.requireNonNull(marker.getTitle()), Objects.requireNonNull(marker.getSnippet()));
+        Toast.makeText(getApplicationContext(), marker.getTitle(), Toast.LENGTH_LONG).show();
     }
 
     public void getWeathers(){
 
     }
 
-    private void showActivity(String url) {
+    private void showActivity(String cityName, String citySnippet) {
         dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
         View view = getLayoutInflater().inflate(R.layout.popup, null);
+        TextView cityTitle = view.findViewById(R.id.popTitle);
+        TextView cityDescription = view.findViewById(R.id.popListTitle);
+        Button dismissButtonTop = view.findViewById(R.id.dismissPopTop);
+
+
+        cityDescription.setText(citySnippet);
+
+        if (weatherLatLng != null){
+            CurrentService service = ServiceGenerator.createService(CurrentService.class);
+            Call call = service.getByLocation((float) weatherLatLng.latitude, (float) weatherLatLng.longitude);
+            call.enqueue(new Callback<CurrentModel>() {
+                @Override
+                public void onResponse(Call<CurrentModel> call, Response<CurrentModel> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.d("Berhasil", response.body().toString());
+
+                        CurrentModel currentModel = response.body();
+                        cityTitle.setText(currentModel.getCityName());
+
+                    } else {
+                        //options.title("Not a country");
+                        Log.d("Gagal", response.toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CurrentModel> call, Throwable t) {
+                    Log.d("Request Failure", t.getMessage());
+                }
+            });
+        }
+
+        dismissButtonTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
         dialog.show();
