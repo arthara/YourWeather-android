@@ -304,6 +304,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onClick(View v) {
                         Intent move = new Intent(MapsActivity.this, SingleWeatherActivity.class);
+                        startActivity(move);
                         finish();
                     }
                 }
