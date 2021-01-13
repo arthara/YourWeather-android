@@ -64,7 +64,7 @@
                     android:textSize="17sp" />
 
                 <Button
-                    android:id="@+id/dismissPop"
+                    android:id="@+id/goToWeatherActivity"
                     android:layout_width="104dp"
                     android:layout_height="30dp"
                     android:layout_below="@+id/cardWeatherPop"

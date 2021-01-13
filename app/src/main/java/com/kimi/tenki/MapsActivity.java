@@ -2,6 +2,7 @@ package com.kimi.tenki;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -262,7 +263,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView cityTitle = view.findViewById(R.id.popTitle);
         TextView cityDescription = view.findViewById(R.id.popListTitle);
         Button dismissButtonTop = view.findViewById(R.id.dismissPopTop);
-
+        Button goToWeatherActivity = (Button) view.findViewById(R.id.goToWeatherActivity);
 
         cityDescription.setText(citySnippet);
 
@@ -297,6 +298,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dialog.dismiss();
             }
         });
+
+        goToWeatherActivity.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent move = new Intent(MapsActivity.this, SingleWeatherActivity.class);
+                        finish();
+                    }
+                }
+        );
 
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
